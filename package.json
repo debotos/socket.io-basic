@@ -1,0 +1,19 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "socket.io learning",
+  "main": "index.js",
+  "author": "Debotos Das",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "env-cmd src/config/env/dev.env nodemon src/index.js"
+  },
+  "dependencies": {
+    "env-cmd": "^8.0.2",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
