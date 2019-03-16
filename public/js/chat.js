@@ -1,10 +1,13 @@
 const socket = io();
 
-socket.on('newConnection', (count) => {
-  console.log('Connected Client ', count);
-});
+socket.on('message', (message) => {
+  console.log(message);
+})
 
-document.querySelector('#increment').addEventListener('click', () => {
-  console.log('Clicked!');
-  socket.emit('increment');
+document.querySelector('#message-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const message = e.target.elements.message.value;
+
+  socket.emit('sendMessage', message);
 })

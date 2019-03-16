@@ -17,15 +17,14 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 // Middleware
 app.use(express.static(publicDirectoryPath));
 
-let count = 0;
-
+/*
+  socket.emit(); // This emit event for particular client
+  io.emit();     // This emit event for all client
+*/
 io.on('connection', (socket) => {
-  console.log('New Client Connected!');
-  socket.emit('newConnection', count);
-  socket.on('increment', () => {
-    count++;
-    // socket.emit('newConnection', count); // This emit for current client
-    io.emit('newConnection', count); // This emit for all client
+  socket.emit('message', 'Welcome!');
+  socket.on('sendMessage', (message) => {
+    io.emit('message', message);
   })
 })
 
