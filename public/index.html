@@ -2,15 +2,20 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chat App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>Chat App</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
 </head>
 
 <body>
-  <h1>Chat App</h1>
+	Chat App
+	<button id="increment">+1</button>
+	<!-- This client is automatically exposed be socket.io server -->
+	<script src="/socket.io/socket.io.js"></script>
+	<!-- Custom Chat Script -->
+	<script src="/js/chat.js"></script>
 </body>
 
 </html>
