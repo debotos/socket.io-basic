@@ -1,13 +1,36 @@
 const socket = io();
 
+// Elements
+/*
+  Putting $ sign in front of variable is a convention
+  Letting me know that what i have in this variable is an element
+*/
+const $messageForm = document.querySelector('#message-form');
+const $messageFormInput = $messageForm.querySelector('input');
+const $messageFormButton = $messageForm.querySelector('button');
+const $locationShareButton = document.querySelector('#share-location');
+const $messages = document.querySelector('#messages');
+
+// Templates
+const messageTemplate = document.querySelector('#message-template').innerHTML;
+
 socket.on('message', (message) => {
   console.log(message);
+  const html = Mustache.render(messageTemplate, {
+    message // pass the value
+  }); // Mustache templating lib
+  $messages.insertAdjacentHTML('beforeend', html);
 })
 
-document.querySelector('#message-form').addEventListener('submit', (event) => {
+$messageForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  const message = event.target.elements.message.value;
+  const message = event.target.elements.message.value; // 'message' is the name attribute
+  // validation
+  if (!message.trim()) return;
+
+  // disable the form
+  $messageFormButton.setAttribute('disabled', 'disabled');
 
   /*
     'sendMessage' is the event name after that everything is
@@ -18,6 +41,13 @@ document.querySelector('#message-form').addEventListener('submit', (event) => {
     the 1st & 2nd argument of on() function's callback 
   */
   socket.emit('sendMessage', message, (error) => {
+    // enable the form
+    $messageFormButton.removeAttribute('disabled');
+    // clean up
+    $messageFormInput.value = '';
+    // focus back
+    $messageFormInput.focus()
+
     if (error) { // stop execution via acknowledagement
       return console.log(error);
     }
@@ -26,16 +56,21 @@ document.querySelector('#message-form').addEventListener('submit', (event) => {
   });
 });
 
-document.querySelector('#share-location').addEventListener('click', () => {
+
+$locationShareButton.addEventListener('click', () => {
+  // disable the button
+  $locationShareButton.setAttribute('disabled', 'disabled');
+  // check support
   if (!navigator.geolocation) {
     return alert("Your browser doesn't support Geolocation.");
   }
-
+  // get the coords
   navigator.geolocation.getCurrentPosition((position) => {
     socket.emit('sendLocation', {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     }, (message) => {
+      $locationShareButton.removeAttribute('disabled');
       console.log(message);
     })
   });
