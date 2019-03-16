@@ -4,6 +4,11 @@ const express = require('express');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
 
+const {
+  generateMessage,
+  generateLocationMessage
+} = require('./utils/messages')
+
 const app = express(); // 1. create express app
 const server = http.createServer(app); // 2. put express app inside httpServer
 const io = socketio(server) // 3. put httpServer inside SocketIO
@@ -39,13 +44,32 @@ app.use(express.static(publicDirectoryPath));
 
   It provided via 3rd argument of emit() like,
     emit(nameOfTheEvent, data, acknowledgementFunction)
-  It accessed via 2nd argunent of on() like,
+  It accessed via 2nd argunent of on() callback like,
     on(nameOfTheEvent, (data, acknowledgementFunction) => { acknowledgementFunction() })
+
+  
+  # In case of ROOM
+  -> socket.join(room_name)
+  It allows us to join a given chat room and we pass to the 
+  name of the room we're trying to join.
+
+  -> io.to(room_name).emit
+  emits an event to everybody in a specific room.
+  
+  -> socket.broadcast.to(room_name).emit
+  similar to socket.broadcast.emit but it's for a specific room.
 */
 io.on('connection', (socket) => {
-  socket.emit('message', 'Welcome!');
+  socket.on('join_room', ({
+    username,
+    room
+  }) => {
+    socket.join(room);
 
-  socket.broadcast.emit('message', 'A new user has joined!');
+    socket.emit('message', generateMessage('Welcome!'));
+    socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`));
+
+  })
 
   socket.on('sendMessage', (message, callback) => {
     const filter = new Filter()
@@ -57,17 +81,17 @@ io.on('connection', (socket) => {
       return callback('Profanity is not allowed!');
     }
 
-    io.emit('message', message);
+    io.emit('message', generateMessage(message));
     callback();
   })
 
   socket.on('sendLocation', (coords, sendStatus) => {
-    io.emit('message', `https://google.com/maps?q=${coords.latitude},${coords.longitude}`);
+    io.emit('locationMessage', generateLocationMessage(coords));
     sendStatus('Location shared!');
   })
 
   socket.on('disconnect', () => {
-    io.emit('message', 'A user has left!');
+    io.emit('message', generateMessage('A user has left!'));
   });
 })
 

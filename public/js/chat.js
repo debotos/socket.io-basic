@@ -13,12 +13,37 @@ const $messages = document.querySelector('#messages');
 
 // Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML;
+const locationTemplate = document.querySelector('#location-template').innerHTML;
 
-socket.on('message', (message) => {
-  console.log(message);
+// Options
+const {
+  username,
+  room
+} = Qs.parse(location.search, {
+  ignoreQueryPrefix: true // it removes '?'
+}); // Query String parser lib
+
+socket.on('message', ({
+  text,
+  createdAt
+}) => {
+  console.log(text);
   const html = Mustache.render(messageTemplate, {
-    message // pass the value
+    message: text, // pass the value
+    createdAt: moment(createdAt).format('h:mm a')
   }); // Mustache templating lib
+  $messages.insertAdjacentHTML('beforeend', html);
+});
+
+socket.on('locationMessage', ({
+  location,
+  createdAt
+}) => {
+  console.log(location);
+  const html = Mustache.render(locationTemplate, {
+    location,
+    createdAt: moment(createdAt).format('h:mm a')
+  });
   $messages.insertAdjacentHTML('beforeend', html);
 })
 
@@ -75,4 +100,10 @@ $locationShareButton.addEventListener('click', () => {
     })
   });
 
+});
+
+
+socket.emit('join_room', {
+  username,
+  room
 });
