@@ -38,9 +38,9 @@ Simply, the client would get notified that the server processed the content that
 It can be ***reverse*** means server would get notified if the message delivered successfully to client.
 It's just a matter of **setting callback in server or client emited event**.
 
-***server(emit) -> client(receive) --acknowledgement--> server
+***server(emit) -> client(receive) --acknowledgement--> server***
 
-client(emit) -> server(receive) --acknowledgement--> Client***
+***client(emit) -> server(receive) --acknowledgement--> Client***
 
 It provided via 3rd argument of emit() like,
 
