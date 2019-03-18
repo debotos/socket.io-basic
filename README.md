@@ -20,12 +20,15 @@
 ### 3 ways via the server can emit event
 
 **socket.emit()**;                     This emit event for ***current client(particular)***
+
 **io.emit();**                             This emit event for ***all client including current***
+
 **socket.broadcast.emit()**   This emit event for ***all client except current one***
 
 ### Built-in Events
 
 **io**.on('**connection**') // Used for new connection(Note that io.on(<built in event>))
+    
 **socket**.on('**disconnect**') // Run whenever a client gets disconnected
 
 ### Event Acknowledgement
@@ -36,11 +39,15 @@ It can be ***reverse*** means server would get notified if the message delivered
 It's just a matter of **setting callback in server or client emited event**.
 
 ***server(emit) -> client(receive) --acknowledgement--> server
+
 client(emit) -> server(receive) --acknowledgement--> Client***
 
 It provided via 3rd argument of emit() like,
+
 **emit(nameOfTheEvent, data, acknowledgementFunction)**
+
 It accessed via 2nd argunent of on() callback like,
+
 **on(nameOfTheEvent, (data, acknowledgementFunction) => { acknowledgementFunction() })**
 
 ### In case of ROOM
